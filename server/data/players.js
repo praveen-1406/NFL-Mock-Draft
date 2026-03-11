@@ -1,0 +1,36 @@
+// EssentiallySports Big Board - Top 30 NFL Draft Prospects 2026
+// Source: https://www.essentiallysports.com/nfl-draft-board/
+const players = [
+  { id: 1,  name: "Arvell Reese",       position: "ILB", college: "Ohio State",      rank: 1,  grade: 4.39, height: "6'4\"",  weight: 240 },
+  { id: 2,  name: "Jeremiyah Love",     position: "RB",  college: "Notre Dame",      rank: 2,  grade: 4.35, height: "6'0\"",  weight: 210 },
+  { id: 3,  name: "Caleb Downs",        position: "S",   college: "Ohio State",      rank: 3,  grade: 4.34, height: "N/A",    weight: null },
+  { id: 4,  name: "David Bailey",       position: "OLB", college: "Texas Tech",      rank: 4,  grade: 4.32, height: "6'3\"",  weight: 246 },
+  { id: 5,  name: "Sonny Styles",       position: "OLB", college: "Ohio State",      rank: 5,  grade: 4.31, height: "6'4.5\"",weight: 235 },
+  { id: 6,  name: "Fernando Mendoza",   position: "QB",  college: "Indiana",         rank: 6,  grade: 4.29, height: "6'5\"",  weight: 225 },
+  { id: 7,  name: "Rueben Bain Jr.",    position: "DE",  college: "Miami",           rank: 7,  grade: 4.28, height: "N/A",    weight: null },
+  { id: 8,  name: "Francis Mauigoa",    position: "OT",  college: "Miami",           rank: 8,  grade: 4.27, height: "6'6\"",  weight: 329 },
+  { id: 9,  name: "Spencer Fano",       position: "OT",  college: "Utah",            rank: 9,  grade: 4.26, height: "6'6\"",  weight: 302 },
+  { id: 10, name: "Kenyon Sadiq",       position: "TE",  college: "Oregon",          rank: 10, grade: 4.25, height: "6'3\"",  weight: 245 },
+  { id: 11, name: "Carnell Tate",       position: "WR",  college: "Ohio State",      rank: 11, grade: 4.24, height: "6'3\"",  weight: 195 },
+  { id: 12, name: "Mansoor Delane",     position: "CB",  college: "LSU",             rank: 12, grade: 4.23, height: "5'11\"", weight: 192 },
+  { id: 13, name: "T.J. Parker",        position: "OLB", college: "Clemson",         rank: 13, grade: 4.22, height: "6'2\"",  weight: 258 },
+  { id: 14, name: "Makai Lemon",        position: "WR",  college: "USC",             rank: 14, grade: 4.21, height: "5'11\"", weight: 190 },
+  { id: 15, name: "CJ Allen",           position: "ILB", college: "Georgia",         rank: 15, grade: 4.20, height: "N/A",    weight: null },
+  { id: 16, name: "Keldric Faulk",      position: "DE",  college: "Auburn",          rank: 16, grade: 4.18, height: "N/A",    weight: null },
+  { id: 17, name: "Peter Woods",        position: "DT",  college: "Clemson",         rank: 17, grade: 4.17, height: "6'2\"",  weight: 315 },
+  { id: 18, name: "Jermod McCoy",       position: "CB",  college: "Tennessee",       rank: 18, grade: 4.16, height: "N/A",    weight: null },
+  { id: 19, name: "Avieon Terrell",     position: "CB",  college: "Clemson",         rank: 19, grade: 4.15, height: "5'11\"", weight: 180 },
+  { id: 20, name: "Jordyn Tyson",       position: "WR",  college: "Arizona State",   rank: 20, grade: 4.14, height: "N/A",    weight: null },
+  { id: 21, name: "Colton Hood",        position: "CB",  college: "Tennessee",       rank: 21, grade: 4.13, height: "N/A",    weight: null },
+  { id: 22, name: "Chris Brazzell II",  position: "WR",  college: "Tennessee",       rank: 22, grade: 4.12, height: "N/A",    weight: null },
+  { id: 23, name: "Kadyn Proctor",      position: "OT",  college: "Alabama",         rank: 23, grade: 4.11, height: "6'7\"",  weight: 359 },
+  { id: 24, name: "KC Concepcion",      position: "WR",  college: "Texas A&M",       rank: 24, grade: 4.10, height: "N/A",    weight: null },
+  { id: 25, name: "Cashius Howell",     position: "DE",  college: "Texas A&M",       rank: 25, grade: 4.09, height: "6'2\"",  weight: 252 },
+  { id: 26, name: "Olaivavega Ioane",   position: "OG",  college: "Penn State",      rank: 26, grade: 4.08, height: "6'4\"",  weight: 332 },
+  { id: 27, name: "Anthony Hill Jr.",   position: "ILB", college: "Texas",           rank: 27, grade: 4.07, height: "N/A",    weight: null },
+  { id: 28, name: "Monroe Freeling",    position: "OT",  college: "Georgia",         rank: 28, grade: 4.06, height: "N/A",    weight: null },
+  { id: 29, name: "Ty Simpson",         position: "QB",  college: "Alabama",         rank: 29, grade: 4.05, height: "N/A",    weight: null },
+  { id: 30, name: "Max Iheanachor",     position: "OT",  college: "Arizona State",   rank: 30, grade: 4.04, height: "6'5.5\"",weight: 325 },
+];
+
+module.exports = players;
