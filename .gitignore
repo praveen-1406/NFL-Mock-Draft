@@ -1,0 +1,68 @@
+# ========================
+# Dependencies
+# ========================
+node_modules/
+**/node_modules/
+
+# ========================
+# Environment Variables
+# NEVER commit .env files
+# ========================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+server/.env
+client/.env
+
+# ========================
+# Build Outputs
+# ========================
+dist/
+build/
+client/dist/
+client/build/
+
+# ========================
+# Logs
+# ========================
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+
+# ========================
+# OS Files
+# ========================
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+
+# ========================
+# Editor / IDE
+# ========================
+.vscode/
+.idea/
+*.swp
+*.swo
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# ========================
+# Vite / React
+# ========================
+client/.vite/
+*.local
+
+# ========================
+# Misc
+# ========================
+.cache/
+coverage/
+.nyc_output/
