@@ -1,197 +1,232 @@
 import { createContext, useContext, useState, useCallback } from "react";
-import axios from "axios";
+import api from "../api/axios";
 
 const DraftContext = createContext(null);
 
-//Draft phases
+// Draft phases
 export const PHASE = {
-    SETUP: "setup",       // User is selecting their team
-    DRAFTING: "drafting", //  progress
-    COMPLETE: "complete", // All 4 rounds done
+  SETUP: "setup",       // User is selecting their team
+  DRAFTING: "drafting", // Draft is in progress
+  COMPLETE: "complete", // All 4 rounds done
 };
 
 export function DraftProvider({ children }) {
-    const [phase, setPhase] = useState(PHASE.SETUP);
-    const [teams, setTeams] = useState([]);
-    const [allPlayers, setAllPlayers] = useState([]);
-    const [availablePlayers, setAvailablePlayers] = useState([]);
-    const [allPicks, setAllPicks] = useState([]);
-    const [userTeamId, setUserTeamId] = useState(null);
-    const [currentPickIndex, setCurrentPickIndex] = useState(0); // 0–27 (28 total)
-    const [isAIPicking, setIsAIPicking] = useState(false);
-    const [lastPick, setLastPick] = useState(null); 
-    const [error, setError] = useState(null);
+  // ─────────────────────────────────────────
+  // Core State
+  // ─────────────────────────────────────────
+  const [phase, setPhase] = useState(PHASE.SETUP);
+  const [teams, setTeams] = useState([]);
+  const [allPlayers, setAllPlayers] = useState([]);
+  const [availablePlayers, setAvailablePlayers] = useState([]);
+  const [allPicks, setAllPicks] = useState([]);
+  const [userTeamId, setUserTeamId] = useState(null);
+  const [currentPickIndex, setCurrentPickIndex] = useState(0); // 0–27 (28 total picks)
+  const [isAIPicking, setIsAIPicking] = useState(false);
+  const [lastPick, setLastPick] = useState(null); // Most recent pick for display
+  const [error, setError] = useState(null);
 
-    const TOTAL_PICKS = 28;  // Total picks = 4 rounds x 7 teams = 28
-    const TOTAL_TEAMS = 7;
+  // ─────────────────────────────────────────
+  // Derived values
+  // ─────────────────────────────────────────
 
-    // Current round (1-4)
-    const currentRound = Math.floor(currentPickIndex / TOTAL_TEAMS) + 1;
+  // Total picks = 4 rounds x 7 teams = 28
+  const TOTAL_PICKS = 28;
+  const TOTAL_TEAMS = 7;
 
-    // current team (order 1 - 7)
-    const currentTeamIndex = currentPickIndex % TOTAL_TEAMS;
-    const currentTeam = teams[currentTeamIndex] || null;
+  // Current round (1-4)
+  const currentRound = Math.floor(currentPickIndex / TOTAL_TEAMS) + 1;
 
-    const isUserTurn =
-        currentTeam !== null &&
-        currentTeam.id === userTeamId &&
-        phase === PHASE.DRAFTING;
+  // Which team picks at currentPickIndex — guard against empty teams array
+  const currentTeamIndex = currentPickIndex % TOTAL_TEAMS;
+  const currentTeam = teams.length > 0 ? (teams[currentTeamIndex] ?? null) : null;
 
-    const userTeam = teams.find((t) => t.id === userTeamId) || null;
+  // Is it the user's turn?
+  const isUserTurn =
+    currentTeam !== null &&
+    userTeamId !== null &&
+    currentTeam.id === userTeamId &&
+    phase === PHASE.DRAFTING;
 
-    const userPicks = allPicks.filter((p) => p.teamId === userTeamId);
+  // User's team object
+  const userTeam = teams.find((t) => t.id === userTeamId) ?? null;
 
-    const getTeamPicks = (teamId) => allPicks.filter((p) => p.teamId === teamId);
+  // Picks made by the user's team
+  const userPicks = allPicks.filter((p) => p.teamId === userTeamId);
 
-    // Initialize-load players + teams from API
-    const initDraft = useCallback(async () => {
-        try {
-            setError(null);
-            const res = await axios.get("/api/draft/init");
-            setTeams(res.data.teams);
-            setAllPlayers(res.data.players);
-            setAvailablePlayers(res.data.players);
-        } catch (err) {
-            setError("Failed to load draft data. Is the server running?");
-            console.error(err);
-        }
-    }, []);
+  // Get picks for any specific team
+  const getTeamPicks = (teamId) => allPicks.filter((p) => p.teamId === teamId);
 
-    // Starting Draft- user has selected their team
-    const startDraft = useCallback((teamId) => {
-        setUserTeamId(teamId);
-        setAllPicks([]);
-        setCurrentPickIndex(0);
-        setLastPick(null);
-        setPhase(PHASE.DRAFTING);
-    }, []);
+  // ─────────────────────────────────────────
+  // Initialize: load players + teams from API
+  // ─────────────────────────────────────────
+  const initDraft = useCallback(async () => {
+    try {
+      setError(null);
+      const res = await api.get("/api/draft/init");
+      setTeams(res.data.teams);
+      setAllPlayers(res.data.players);
+      setAvailablePlayers(res.data.players);
+    } catch (err) {
+      setError("Failed to load draft data. Is the server running?");
+      console.error(err);
+    }
+  }, []);
 
-    // Recording  pick ( both user + AI)
-    const recordPick = useCallback((pick) => {
-        setAvailablePlayers((prev) =>               //removing from available
-            prev.filter((p) => p.id !== pick.player.id)
-        );
+  // ─────────────────────────────────────────
+  // Start Draft: user has selected their team
+  // ─────────────────────────────────────────
+  const startDraft = useCallback((teamId) => {
+    setUserTeamId(teamId);
+    setAllPicks([]);
+    setCurrentPickIndex(0);
+    setLastPick(null);
+    setPhase(PHASE.DRAFTING);
+  }, []);
 
-        setAllPicks((prev) => [...prev, pick]);
+  // ─────────────────────────────────────────
+  // Record a pick (used for both user + AI)
+  // ─────────────────────────────────────────
+  const recordPick = useCallback((pick) => {
+    // Remove picked player from available pool
+    setAvailablePlayers((prev) =>
+      prev.filter((p) => p.id !== pick.player.id)
+    );
 
-        setLastPick(pick);
+    // Add to pick history
+    setAllPicks((prev) => [...prev, pick]);
 
-        const nextIndex = currentPickIndex + 1;
-        setCurrentPickIndex(nextIndex);
+    // Store as last pick for display
+    setLastPick(pick);
 
-        // if draft is complete
-        if (nextIndex >= TOTAL_PICKS) {
-            setPhase(PHASE.COMPLETE);
-        }
-    }, [currentPickIndex]);
+    // Advance pick index
+    const nextIndex = currentPickIndex + 1;
+    setCurrentPickIndex(nextIndex);
 
-    const userPick = useCallback((player) => {
-        if (!isUserTurn) return;
+    // Check if draft is complete
+    if (nextIndex >= TOTAL_PICKS) {
+      setPhase(PHASE.COMPLETE);
+    }
+  }, [currentPickIndex]);
 
-        const pick = {
-            teamId: userTeamId,
-            teamName: userTeam.name,
-            player,
-            round: currentRound,
-            pickNumber: currentPickIndex + 1,
-            reasoning: null,
-            isAI: false,
-        };
+  // ─────────────────────────────────────────
+  // User makes a pick
+  // ─────────────────────────────────────────
+  const userPick = useCallback((player) => {
+    if (!isUserTurn) return;
 
-        recordPick(pick);
-    }, [isUserTurn, userTeamId, userTeam, currentRound, currentPickIndex, recordPick]);
-
-    // AI pick
-    const triggerAIPick = useCallback(async (team, players, picks, round) => {
-        setIsAIPicking(true);
-        setError(null);
-
-        try {
-            const res = await axios.post("/api/draft/ai-pick", {
-                teamId: team.id,
-                availablePlayers: players,
-                allPicks: picks,
-                round,
-            });
-
-            recordPick(res.data.pick);
-        } catch (err) {
-            console.error("AI pick failed:", err);
-            setError(`AI pick failed for ${team.name}. Retrying...`);
-
-            // Fallback: pick best player
-            const fallbackPlayer =
-                players.find((p) => team.needs.includes(p.position)) || players[0];
-
-            const fallbackPick = {
-                teamId: team.id,
-                teamName: team.name,
-                player: fallbackPlayer,
-                round,
-                pickNumber: picks.length + 1,
-                reasoning: "Best available (fallback pick).",
-                isAI: true,
-            };
-
-            recordPick(fallbackPick);
-        } finally {
-            setIsAIPicking(false);
-        }
-    }, [recordPick]);
-
-    // Reset
-    const resetDraft = useCallback(() => {
-        setPhase(PHASE.SETUP);
-        setUserTeamId(null);
-        setAllPicks([]);
-        setCurrentPickIndex(0);
-        setLastPick(null);
-        setIsAIPicking(false);
-        setError(null);
-        setAvailablePlayers(allPlayers); 
-    }, [allPlayers]);
-
-    // Context value
-    const value = {
-        phase,
-        teams,
-        allPlayers,
-        availablePlayers,
-        allPicks,
-        userTeamId,
-        userTeam,
-        userPicks,
-        currentPickIndex,
-        currentRound,
-        currentTeam,
-        isUserTurn,
-        isAIPicking,
-        lastPick,
-        error,
-
-        TOTAL_PICKS,
-        TOTAL_TEAMS,
-
-        initDraft,
-        startDraft,
-        userPick,
-        triggerAIPick,
-        resetDraft,
-        getTeamPicks,
+    const pick = {
+      teamId: userTeamId,
+      teamName: userTeam.name,
+      player,
+      round: currentRound,
+      pickNumber: currentPickIndex + 1,
+      reasoning: null,
+      isAI: false,
     };
 
-    return (
-        <DraftContext.Provider value={value}>
-            {children}
-        </DraftContext.Provider>
-    );
+    recordPick(pick);
+  }, [isUserTurn, userTeamId, userTeam, currentRound, currentPickIndex, recordPick]);
+
+  // ─────────────────────────────────────────
+  // AI makes a pick (calls backend)
+  // ─────────────────────────────────────────
+  const triggerAIPick = useCallback(async (team, players, picks, round) => {
+    setIsAIPicking(true);
+    setError(null);
+
+    try {
+      const res = await api.post("/api/draft/ai-pick", {
+        teamId: team.id,
+        availablePlayers: players,
+        allPicks: picks,
+        round,
+      });
+
+      recordPick(res.data.pick);
+    } catch (err) {
+      console.error("AI pick failed:", err);
+      setError(`AI pick failed for ${team.name}. Retrying...`);
+
+      // Fallback: pick best available player for the team
+      const fallbackPlayer =
+        players.find((p) => team.needs.includes(p.position)) || players[0];
+
+      const fallbackPick = {
+        teamId: team.id,
+        teamName: team.name,
+        player: fallbackPlayer,
+        round,
+        pickNumber: picks.length + 1,
+        reasoning: "Best available (fallback pick).",
+        isAI: true,
+      };
+
+      recordPick(fallbackPick);
+    } finally {
+      setIsAIPicking(false);
+    }
+  }, [recordPick]);
+
+  // ─────────────────────────────────────────
+  // Reset everything back to setup
+  // ─────────────────────────────────────────
+  const resetDraft = useCallback(() => {
+    setPhase(PHASE.SETUP);
+    setUserTeamId(null);
+    setAllPicks([]);
+    setCurrentPickIndex(0);
+    setLastPick(null);
+    setIsAIPicking(false);
+    setError(null);
+    setAvailablePlayers(allPlayers); // restore full player pool
+  }, [allPlayers]);
+
+  // ─────────────────────────────────────────
+  // Context value
+  // ─────────────────────────────────────────
+  const value = {
+    // State
+    phase,
+    teams,
+    allPlayers,
+    availablePlayers,
+    allPicks,
+    userTeamId,
+    userTeam,
+    userPicks,
+    currentPickIndex,
+    currentRound,
+    currentTeam,
+    isUserTurn,
+    isAIPicking,
+    lastPick,
+    error,
+
+    // Constants
+    TOTAL_PICKS,
+    TOTAL_TEAMS,
+
+    // Actions
+    initDraft,
+    startDraft,
+    userPick,
+    triggerAIPick,
+    resetDraft,
+    getTeamPicks,
+  };
+
+  return (
+    <DraftContext.Provider value={value}>
+      {children}
+    </DraftContext.Provider>
+  );
 }
 
-// Custom hook 
+// Custom hook for easy access
 export function useDraft() {
-    const context = useContext(DraftContext);
-    if (!context) {
-        throw new Error("useDraft must be used inside <DraftProvider>");
-    }
-    return context;
+  const context = useContext(DraftContext);
+  if (!context) {
+    throw new Error("useDraft must be used inside <DraftProvider>");
+  }
+  return context;
 }

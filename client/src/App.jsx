@@ -11,7 +11,7 @@ function AppContent() {
   // Load players + teams from backend on mount
   useEffect(() => {
     initDraft();
-  }, []);
+  }, [initDraft]);
 
   return (
     <div className="min-h-screen">
