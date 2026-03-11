@@ -2,7 +2,6 @@ const { GoogleGenAI } = require('@google/genai');
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-// console.log("GEMINI API KEY:",process.env.GEMINI_API_KEY)
 
 function satisfiesNeed(playerPosition, teamNeeds) {
   return teamNeeds.includes(playerPosition);
