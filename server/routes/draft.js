@@ -39,6 +39,7 @@ router.post('/ai-pick', async (req, res) => {
       isAI: true,
     };
 
+    console.log(pick);
     res.json({ pick });
 
   } catch (error) {

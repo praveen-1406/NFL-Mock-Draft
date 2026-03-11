@@ -2,6 +2,7 @@ const { GoogleGenAI } = require('@google/genai');
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
+// console.log("GEMINI API KEY:",process.env.GEMINI_API_KEY)
 
 function satisfiesNeed(playerPosition, teamNeeds) {
   return teamNeeds.includes(playerPosition);
@@ -59,7 +60,7 @@ Respond with ONLY a valid JSON object. No markdown, no explanation outside the J
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-2.0-flash',
+      model: 'gemini-2.5-flash',
       contents: prompt,
     });
 
@@ -80,13 +81,14 @@ Respond with ONLY a valid JSON object. No markdown, no explanation outside the J
       console.warn(`Gemini returned invalid rank ${parsed.selectedPlayerRank}, using fallback`);
       return fallbackPick(team, availablePlayers);
     }
-
     return {
       player: selectedPlayer,
       reasoning: parsed.reasoning,
     };
 
   } catch (error) {
+    // console.log("GEMINI API KEY:",process.env.GEMINI_API_KEY)
+
     console.error('Gemini API error:', error.message);
     return fallbackPick(team, availablePlayers);
   }

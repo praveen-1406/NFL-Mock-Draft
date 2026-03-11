@@ -1,1 +1,83 @@
 @import "tailwindcss";
+
+@theme {
+  --color-background: #080b14;
+  --color-surface: rgba(255, 255, 255, 0.04);
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-text: #f1f5f9;
+  --color-text-muted: #94a3b8;
+
+  --color-pos-qb:  #f87171;
+  --color-pos-wr:  #60a5fa;
+  --color-pos-rb:  #22d3ee;
+  --color-pos-te:  #2dd4bf;
+  --color-pos-t:   #facc15;
+  --color-pos-g:   #facc15;
+  --color-pos-de:  #c084fc;
+  --color-pos-dt:  #a78bfa;
+  --color-pos-olb: #fb923c;
+  --color-pos-ilb: #fbbf24;
+  --color-pos-cb:  #4ade80;
+  --color-pos-s:   #f472b6;
+}
+
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html, body, #root {
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-color: #080b14;
+    background-image:
+      radial-gradient(ellipse at 20% 20%, rgba(30, 41, 80, 0.4) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(20, 30, 60, 0.3) 0%, transparent 50%);
+    background-attachment: fixed;
+    color: #f1f5f9;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@layer components {
+  /* Cards */
+  .card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.875rem;
+    padding: 1rem;
+  }
+
+  /* Buttons */
+  .btn-primary {
+    background: #ffffff;
+    color: #000000;
+    font-weight: 700;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    font-size: 0.875rem;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: #e5e7eb; }
+  .btn-primary:active { transform: scale(0.96); }
+
+  /* Transparent backgrounds used throughout */
+  .bg-glass { background: rgba(255,255,255,0.04); }
+  .bg-glass-hover:hover { background: rgba(255,255,255,0.07); }
+  .border-glass { border-color: rgba(255,255,255,0.08); }
+  .border-glass-md { border-color: rgba(255,255,255,0.15); }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }

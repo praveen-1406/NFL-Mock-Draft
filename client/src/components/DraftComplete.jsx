@@ -99,23 +99,20 @@ export default function DraftComplete() {
                       </div>
                     </div>
                   </div>
-
                   {/* Their picks */}
                   <div className="flex flex-col gap-1.5">
                     {picks.map((pick) => (
                       <div
                         key={pick.player.id}
-                        className="flex items-center justify-between"
+                        className="flex items-center justify-between gap-2"
                       >
-                        <div>
-                          <span className="text-white text-xs font-semibold">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="text-gray-500 text-xs font-mono shrink-0">R{pick.round}</span>
+                          <span className="text-white text-xs font-semibold truncate">
                             {pick.player.name}
                           </span>
-                          <span className="text-gray-600 text-xs ml-1">
-                            R{pick.round}
-                          </span>
                         </div>
-                        <span className={`text-xs font-black ${getPosStyle(pick.player.position).split(" ")[0]}`}>
+                        <span className={`text-xs font-black shrink-0 ${getPosStyle(pick.player.position).split(" ")[0]}`}>
                           {pick.player.position}
                         </span>
                       </div>
