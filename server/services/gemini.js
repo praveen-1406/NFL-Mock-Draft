@@ -2,19 +2,17 @@ const { GoogleGenAI } = require('@google/genai');
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-/**
- * Direct match only - positions in teams.js match players.js exactly:
- */
+
 function satisfiesNeed(playerPosition, teamNeeds) {
   return teamNeeds.includes(playerPosition);
 }
 
 /**
- *  {Object} team              - The team that is picking
- *  {Array}  availablePlayers  - Players still on the board
- *  {Array}  allPicks          - All picks made so far (for context)
- *  {number} round             - Current round number (1-4)
- * @returns {Object}                 - { player, reasoning }
+  Object- team              - The team that is picking
+  Array - availablePlayers  - Players still on the board
+  Array - allPicks          - All picks made so far (for context)
+  number- round             - Current round number (1-4)
+  returns {Object}                 - { player, reasoning }
  */
 async function getAIPick(team, availablePlayers, allPicks, round) {
   const teamPicks = allPicks.filter(p => p.teamId === team.id);
