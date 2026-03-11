@@ -20,7 +20,7 @@ app.use('/api/draft', draftRoutes);
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'OK',
-    message: '🏈 NFL Draft Server is running!',
+    message: 'NFL Draft Server is running!',
     timestamp: new Date().toISOString(),
   });
 });
