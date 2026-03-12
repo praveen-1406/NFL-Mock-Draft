@@ -25,9 +25,7 @@ export function DraftProvider({ children }) {
   const [lastPick, setLastPick] = useState(null); // Most recent pick for display
   const [error, setError] = useState(null);
 
-  // ─────────────────────────────────────────
   // Derived values
-  // ─────────────────────────────────────────
 
   // Total picks = 4 rounds x 7 teams = 28
   const TOTAL_PICKS = 28;
@@ -56,9 +54,7 @@ export function DraftProvider({ children }) {
   // Get picks for any specific team
   const getTeamPicks = (teamId) => allPicks.filter((p) => p.teamId === teamId);
 
-  // ─────────────────────────────────────────
   // Initialize: load players + teams from API
-  // ─────────────────────────────────────────
   const initDraft = useCallback(async () => {
     try {
       setError(null);
@@ -72,9 +68,7 @@ export function DraftProvider({ children }) {
     }
   }, []);
 
-  // ─────────────────────────────────────────
   // Start Draft: user has selected their team
-  // ─────────────────────────────────────────
   const startDraft = useCallback((teamId) => {
     setUserTeamId(teamId);
     setAllPicks([]);
@@ -83,9 +77,7 @@ export function DraftProvider({ children }) {
     setPhase(PHASE.DRAFTING);
   }, []);
 
-  // ─────────────────────────────────────────
   // Record a pick (used for both user + AI)
-  // ─────────────────────────────────────────
   const recordPick = useCallback((pick) => {
     // Remove picked player from available pool
     setAvailablePlayers((prev) =>
@@ -108,9 +100,7 @@ export function DraftProvider({ children }) {
     }
   }, [currentPickIndex]);
 
-  // ─────────────────────────────────────────
   // User makes a pick
-  // ─────────────────────────────────────────
   const userPick = useCallback((player) => {
     if (!isUserTurn) return;
 
@@ -127,9 +117,7 @@ export function DraftProvider({ children }) {
     recordPick(pick);
   }, [isUserTurn, userTeamId, userTeam, currentRound, currentPickIndex, recordPick]);
 
-  // ─────────────────────────────────────────
   // AI makes a pick (calls backend)
-  // ─────────────────────────────────────────
   const triggerAIPick = useCallback(async (team, players, picks, round) => {
     setIsAIPicking(true);
     setError(null);
@@ -167,9 +155,7 @@ export function DraftProvider({ children }) {
     }
   }, [recordPick]);
 
-  // ─────────────────────────────────────────
   // Reset everything back to setup
-  // ─────────────────────────────────────────
   const resetDraft = useCallback(() => {
     setPhase(PHASE.SETUP);
     setUserTeamId(null);
@@ -181,9 +167,7 @@ export function DraftProvider({ children }) {
     setAvailablePlayers(allPlayers); // restore full player pool
   }, [allPlayers]);
 
-  // ─────────────────────────────────────────
   // Context value
-  // ─────────────────────────────────────────
   const value = {
     // State
     phase,

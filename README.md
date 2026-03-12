@@ -8,7 +8,7 @@ An AI-powered NFL Mock Draft Simulator where you pick for your chosen team and G
 
 ## Loom Walkthrough
 
- [Watch the walkthrough here](#) 
+ [Watch the walkthrough here](https://drive.google.com/file/d/1DE5LsB7sGBtZxHTjcc-ZqXW8KWFY5HGv/view?usp=sharing) 
 
 ---
 
@@ -158,7 +158,7 @@ npm run dev
 
 ### 4. Open the app
 
-Visit **http://vercel**
+Visit **https://nfl-mock-draft-khaki.vercel.app/**
 
 ---
 
