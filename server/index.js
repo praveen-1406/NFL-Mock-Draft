@@ -11,10 +11,10 @@ app.use(cors({
   origin: [
     process.env.FRONTEND_URI,
   ],
-  methods: ['GET', 'POST'],
+  methods: ['GET', 'POST' , 'OPTIONS'],
 }));
-
-app.use(express.json());
+ 
+app.use(express.json()); 
 
 app.use('/api/draft', draftRoutes);
 
